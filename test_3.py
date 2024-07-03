@@ -11,39 +11,15 @@
 import heapq
 from collections import defaultdict
 
-def dijkstra(graph, start, end):
-    # สร้าง dictionary เพื่อเก็บระยะทางที่สั้นที่สุดจากจุดเริ่มต้นไปยังแต่ละจุด
-    distances = {start: 0}
-    # สร้าง priority queue เพื่อเก็บจุดที่ต้องพิจารณาต่อไป
-    pq = [(0, start)]
-    # สร้าง dictionary เพื่อเก็บเส้นทาง
-    path = {}
+edges = [
+    ("A", "B", 4),
+    ("A", "C", 2),
+    ("B", "D", 3),
+    ("C", "D", 7),
+    ("C", "E", 5),
+    ("D", "E", 2)
+]
 
-    while pq:
-        current_distance, current_vertex = heapq.heappop(pq)
-
-        # ถ้าถึงจุดสิ้นสุดแล้ว ให้คืนค่าระยะทางที่สั้นที่สุด
-        if current_vertex == end:
-            return current_distance
-
-        # ถ้าระยะทางปัจจุบันมากกว่าระยะทางที่เคยคำนวณไว้ ให้ข้ามไป
-        if current_distance > distances.get(current_vertex, float('inf')):
-            continue
-
-        # พิจารณาจุดที่เชื่อมต่อกับจุดปัจจุบัน
-        for neighbor, weight in graph[current_vertex].items():
-            distance = current_distance + weight
-
-            # ถ้าพบระยะทางที่สั้นกว่า ให้อัปเดตค่า
-            if distance < distances.get(neighbor, float('inf')):
-                distances[neighbor] = distance
-                path[neighbor] = current_vertex
-                heapq.heappush(pq, (distance, neighbor))
-
-    # ถ้าไม่พบเส้นทางไปยังจุดสิ้นสุด
-    return float('inf')
-
-# ฟังก์ชันสำหรับสร้างกราฟจาก edges
 def create_graph(edges):
     graph = defaultdict(dict)
     for start, end, weight in edges:
@@ -51,19 +27,28 @@ def create_graph(edges):
         graph[end][start] = weight
     return graph
 
-# ตัวอย่างการใช้งาน
-edges = [
-    ("A", "B", 4),
-    ("A", "C", 2),
-    ("B", "D", 3),
-    ("C", "D", 1),
-    ("C", "E", 5),
-    ("D", "E", 2)
-]
+def dijkstra(graph, start, end):
+    distances = {start: 0}
+    pq = [(0, start)]
+    path = {}
+
+    while pq:
+        current_distance, current_vertex = heapq.heappop(pq) #คืนค่าระยะทางที่สั้นที่สุด เมื่อถึงจุดสิ้นสุด
+        
+        if current_vertex == end:
+            return current_distance
+        if current_distance > distances.get(current_vertex, float('inf')):
+            continue
+        for neighbor, weight in graph[current_vertex].items():
+            distance = current_distance + weight
+            if distance < distances.get(neighbor, float('inf')):
+                distances[neighbor] = distance
+                path[neighbor] = current_vertex
+                heapq.heappush(pq, (distance, neighbor))
+    return float('inf')
 
 start = "A"
 end = "E"
-
 graph = create_graph(edges)
 shortest_distance = dijkstra(graph, start, end)
 
