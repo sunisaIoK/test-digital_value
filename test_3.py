@@ -33,7 +33,7 @@ def dijkstra(graph, start, end):
     path = {}
 
     while pq:
-        current_distance, current_vertex = heapq.heappop(pq) #คืนค่าระยะทางที่สั้นที่สุด เมื่อถึงจุดสิ้นสุด
+        current_distance, current_vertex = heapq.heappop(pq) 
         
         if current_vertex == end:
             return current_distance
